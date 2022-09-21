@@ -15,5 +15,5 @@ $ yarn
 ## Rodando
 
 ```bash
-$ docker compose up -d --build
+$ tarn test
 ```
