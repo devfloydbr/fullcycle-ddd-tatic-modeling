@@ -20,14 +20,14 @@ export class OrderItemSequelizeModel extends Model {
   declare id: string
 
   @ForeignKey(() => ProductSequelizeModel)
-  @Column({ allowNull: false })
+  @Column
   declare product_id: string
 
   @BelongsTo(() => ProductSequelizeModel)
   declare product: ProductSequelizeModel
 
   @ForeignKey(() => OrderSequelizeModel)
-  @Column({ allowNull: false })
+  @Column
   declare order_id: string
 
   @BelongsTo(() => OrderSequelizeModel)

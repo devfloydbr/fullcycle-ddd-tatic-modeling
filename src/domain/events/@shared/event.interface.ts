@@ -1,1 +1,4 @@
-export interface IEvent {}
+export interface IEvent {
+  ocurredAt: Date
+  data: any
+}
