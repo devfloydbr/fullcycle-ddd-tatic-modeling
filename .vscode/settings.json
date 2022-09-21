@@ -1,3 +1,13 @@
 {
-    "jestrunner.jestCommand": "yarn test"
+  "jestrunner.jestCommand": "yarn test",
+  "material-icon-theme.folders.associations": {
+    "domain": "controller",
+    "entities": "admin",
+    "repositories": "content",
+    "infra": "shared",
+    "sequelize": "database"    
+  },
+  "material-icon-theme.files.associations": {
+    "*.service.ts": "typescript",   
+  }
 }
