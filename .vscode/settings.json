@@ -5,7 +5,8 @@
     "entities": "admin",
     "repositories": "content",
     "infra": "shared",
-    "sequelize": "database"    
+    "sequelize": "database",
+    "@shared": "shared"
   },
   "material-icon-theme.files.associations": {
     "*.service.ts": "typescript",   

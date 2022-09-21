@@ -1,9 +1,9 @@
 import { Customer } from '../../../domain/entities/costumer/entity/costumer.entity'
 import { Address } from '../../../domain/entities/costumer/object-values/address/address.ov'
-import { ICostumerRepositoryInterface } from '../../../domain/interfaces/customer-repository.interface'
+import { ICostumerRepository } from '../../../domain/interfaces/customer-repository.interface'
 import { CustomerSequelizeModel } from '../../orm/sequelize/models/costumer.model'
 
-export class CustomerRepository implements ICostumerRepositoryInterface {
+export class CustomerRepository implements ICostumerRepository {
   async create(entity: Customer) {
     await CustomerSequelizeModel.create({
       id: entity.id,
