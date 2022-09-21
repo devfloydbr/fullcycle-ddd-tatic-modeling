@@ -27,7 +27,7 @@ export class OrderSequelizeModel extends Model {
   declare costumer: CustomerSequelizeModel
 
   // @HasMany(() => OrderItemSequelizeModel)
-  // declare tems: OrderItemSequelizeModel[]
+  // declare items: OrderItemSequelizeModel[]
 
   @Column({
     allowNull: false
