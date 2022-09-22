@@ -21,13 +21,13 @@ export class OrderSequelizeModel extends Model {
 
   @ForeignKey(() => CustomerSequelizeModel)
   @Column
-  declare costumer_id: string
+  declare customer_id: string
 
   @BelongsTo(() => CustomerSequelizeModel)
-  declare costumer: CustomerSequelizeModel
+  declare customer: CustomerSequelizeModel
 
-  // @HasMany(() => OrderItemSequelizeModel)
-  // declare items: OrderItemSequelizeModel[]
+  @HasMany(() => OrderItemSequelizeModel)
+  declare items: OrderItemSequelizeModel[]
 
   @Column({
     allowNull: false

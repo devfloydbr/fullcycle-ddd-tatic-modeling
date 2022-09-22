@@ -31,7 +31,7 @@ export class OrderItemSequelizeModel extends Model {
   declare order_id: string
 
   @BelongsTo(() => OrderSequelizeModel)
-  declare order: OrderSequelizeModel
+  declare order: Awaited<OrderSequelizeModel>
 
   @Column({
     allowNull: false

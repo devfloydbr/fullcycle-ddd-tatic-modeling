@@ -1,16 +1,16 @@
 import { Order } from '../../../domain/entities/order/entity/order.entity'
+import { OrderItem } from '../../../domain/entities/order/order_item.aggregate'
+import { IOrderRepository } from '../../../domain/interfaces/order-repository.interface'
 import { OrderItemSequelizeModel } from '../../orm/sequelize/models/order-item.model'
 
 import { OrderSequelizeModel } from '../../orm/sequelize/models/order.model'
 
-// implements IOrderRepositoryInterface
-
-export class OrderRepository {
+export class OrderRepository implements IOrderRepository {
   async create(entity: Order) {
     await OrderSequelizeModel.create(
       {
         id: entity.id,
-        customerId: entity.customerId,
+        customer_id: entity.customerId,
         total: entity.total(),
         items: entity.items.map(item => ({
           id: item.id,
@@ -20,84 +20,97 @@ export class OrderRepository {
           price: item.price,
           quantity: item.quantity
         }))
+      },
+      {
+        include: [{ model: OrderItemSequelizeModel }]
       }
-      // {
-      //   include: [{ model: OrderItemSequelizeModel }]
-      // }
     )
   }
 
-  // async update(entity: Customer) {
-  //   await CustomerSequelizeModel.update(
-  //     {
-  //       id: entity.id,
-  //       name: entity.name,
-  //       active: entity.isActive(),
-  //       rewardPoints: entity.rewardPoints,
-  //       street: entity.address.street,
-  //       number: entity.address.number,
-  //       city: entity.address.city,
-  //       zip: entity.address.zip
-  //     },
-  //     {
-  //       where: {
-  //         id: entity.id
-  //       }
-  //     }
-  //   )
-  // }
+  async update(entity: Order) {
+    const sequelize = OrderSequelizeModel.sequelize
 
-  // async find(id: string) {
-  //   let customerModel = {} as CustomerSequelizeModel
+    await sequelize.transaction(async t => {
+      await OrderItemSequelizeModel.destroy({
+        where: { order_id: entity.id },
+        transaction: t
+      })
 
-  //   try {
-  //     customerModel = await CustomerSequelizeModel.findOne({
-  //       where: {
-  //         id
-  //       },
-  //       rejectOnEmpty: true
-  //     })
-  //   } catch {
-  //     throw new Error('Customer not found.')
-  //   }
+      const items = entity.items.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        product_id: item.productId,
+        quantity: item.quantity,
+        order_id: entity.id
+      }))
 
-  //   const customer = new Customer(id, customerModel.name)
+      await OrderItemSequelizeModel.bulkCreate(items, { transaction: t })
 
-  //   const address = new Address(
-  //     customerModel.street,
-  //     customerModel.number,
-  //     customerModel.city,
-  //     customerModel.zip
-  //   )
+      await OrderSequelizeModel.update(
+        { total: entity.total() },
+        { where: { id: entity.id }, transaction: t }
+      )
+    })
+  }
 
-  //   customer.changeAddress(address)
+  async find(id: string) {
+    let orderModel = {} as OrderSequelizeModel
 
-  //   return customer
-  // }
+    try {
+      orderModel = await OrderSequelizeModel.findOne({
+        where: {
+          id
+        },
+        include: [{ model: OrderItemSequelizeModel }],
+        rejectOnEmpty: true
+      })
+    } catch {
+      throw new Error('Order not found.')
+    }
 
-  // async findAll() {
-  //   const customerModels = await CustomerSequelizeModel.findAll()
+    const order = new Order(
+      orderModel.id,
+      orderModel.customer_id,
+      orderModel.items.map(
+        item =>
+          new OrderItem(
+            item.id,
+            item.product_id,
+            item.name,
+            item.price,
+            item.quantity
+          )
+      )
+    )
 
-  //   const customers = customerModels.map(customer => {
-  //     let generateCustomer = new Customer(customer.id, customer.name)
-  //     generateCustomer.addRewardPoints(customer.rewardPoints)
+    return order
+  }
 
-  //     const generateAddress = new Address(
-  //       customer.street,
-  //       customer.number,
-  //       customer.city,
-  //       customer.zip
-  //     )
+  async findAll() {
+    const orderModels = await OrderSequelizeModel.findAll({
+      include: [{ model: OrderItemSequelizeModel }]
+    })
 
-  //     generateCustomer.changeAddress(generateAddress)
+    const orders = orderModels.map(order => {
+      let generateOrder = new Order(
+        order.id,
+        order.customer_id,
+        order.items.map(
+          item =>
+            new OrderItem(
+              item.id,
+              item.product_id,
+              item.name,
+              item.price,
+              item.quantity
+            )
+        )
+      )
 
-  //     if (customer.active) {
-  //       generateCustomer.activate()
-  //     }
+      return generateOrder
+    })
 
-  //     return generateCustomer
-  //   })
-
-  //   return customers
-  // }
+    return orders
+  }
 }

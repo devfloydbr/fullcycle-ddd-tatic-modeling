@@ -44,7 +44,14 @@ export class Order {
     }
   }
 
+  addItem(item: OrderItem): void {
+    this._items.push(item)
+  }
+
   total() {
-    return this._items.reduce((acc, item) => acc + item.price, 0)
+    return this._items.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    )
   }
 }

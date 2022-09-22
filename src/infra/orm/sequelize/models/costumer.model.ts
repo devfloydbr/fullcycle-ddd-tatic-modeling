@@ -1,4 +1,5 @@
-import { Column, Model, PrimaryKey, Table } from 'sequelize-typescript'
+import { Column, HasMany, Model, PrimaryKey, Table } from 'sequelize-typescript'
+import { OrderSequelizeModel } from './order.model'
 
 @Table({
   tableName: 'costumers',
