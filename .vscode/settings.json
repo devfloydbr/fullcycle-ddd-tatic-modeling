@@ -3,6 +3,7 @@
   "material-icon-theme.folders.associations": {
     "domain": "controller",
     "entities": "admin",
+    "entity": "admin",
     "repositories": "content",
     "infra": "shared",
     "sequelize": "database",
